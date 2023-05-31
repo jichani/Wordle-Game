@@ -22,6 +22,7 @@ window.onload = function () {
 }
 
 function intialize() {
+
     //  게임 보드 생성
     for (let r = 0; r < height; r++) {
         for (let c = 0; c < width; c++) {
@@ -33,41 +34,89 @@ function intialize() {
             document.getElementById("board").appendChild(tile);
         }
     }
+    // 키보드 생성
+    let keyboard = [
+        ["Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P"],
+        ["A", "S", "D", "F", "G", "H", "J", "K", "L", " "],
+        ["Enter", "Z", "X", "C", "V", "B", "N", "M", "⌫"]
+    ]
+
+    for (let i = 0; i < keyboard.length; i++) {
+        let currRow = keyboard[i];
+        let keyboardRow = document.createElement("div");
+        keyboardRow.classList.add("keyboard-row");
+
+        for (let j = 0; j < currRow.length; j++) {
+            let keyTile = document.createElement("div");
+
+            let key = currRow[j];
+            keyTile.innerText = key;
+            if (key == "Enter") {
+                keyTile.id = "Enter";
+            }
+            else if (key == "⌫") {
+                keyTile.id = "Backspace"
+            }
+            else if ("A" <= key && key <= "Z") {
+                keyTile.id = "Key" + key; // "key" + "A"
+            }
+
+            keyTile.addEventListener("click", processKey);
+
+            if (key == "Enter") {
+                keyTile.classList.add("enter-key-tile");
+            } else {
+                keyTile.classList.add("key-tile");
+            }
+            keyboardRow.appendChild(keyTile);
+        }
+        document.body.appendChild(keyboardRow);
+    }
+
+
     // 키를 누를 때 마다
     document.addEventListener("keyup", (e) => {
-        if (gameOver) return;
-
-        // 무슨 키를 눌렀는지 알려주는 코드
-        // alert(e.code);
-
-        // 아스키코드를 비쿄하기 때문에 올바른 알파벳을 입력하지 않는다면 false 가 나온다.
-        if ("KeyA" <= e.code && e.code <= "keyZ") {
-            if (col < width) {
-                let currTile = document.getElementById(row.toString() + "-" + col.toString());
-                if (currTile.innerHTML == "") {
-                    currTile.innerText = e.code[3]
-                    col++;
-                }
-            }
-        }
-        else if (e.code == "Backspace") {
-            if (0 < col && col <= width) {
-                col--;
-            }
-            let currTile = document.getElementById(row.toString() + "-" + col.toString());
-            currTile.innerText = "";
-        }
-
-        else if (e.code == "Enter") {
-            update();
-        }
-
-        if (!gameOver && row == height) {
-            gameOver = true;
-            document.getElementById("answer").innerText = `정답은 : ${word}`;
-        }
-
+        processInput(e);
     })
+}
+
+function processKey() {
+    let e = { "code": this.id };
+    processInput(e)
+}
+
+function processInput(e) {
+    if (gameOver) return;
+
+    // 무슨 키를 눌렀는지 알려주는 코드
+    // alert(e.code);
+
+    // 아스키코드를 비쿄하기 때문에 올바른 알파벳을 입력하지 않는다면 false 가 나온다.
+    if ("KeyA" <= e.code && e.code <= "keyZ") {
+        if (col < width) {
+            let currTile = document.getElementById(row.toString() + "-" + col.toString());
+            if (currTile.innerHTML == "") {
+                currTile.innerText = e.code[3]
+                col++;
+            }
+        }
+    }
+    else if (e.code == "Backspace") {
+        if (0 < col && col <= width) {
+            col--;
+        }
+        let currTile = document.getElementById(row.toString() + "-" + col.toString());
+        currTile.innerText = "";
+    }
+
+    else if (e.code == "Enter") {
+        update();
+    }
+
+    if (!gameOver && row == height) {
+        gameOver = true;
+        document.getElementById("answer").innerText = `정답은 : ${word}`;
+    }
 }
 
 function update() {
@@ -108,6 +157,11 @@ function update() {
         // 정답이라면 ?
         if (word[c] == letter) {
             currTile.classList.add("correct");
+
+            let keyTile = document.getElementById("key" + letter);
+            keyTile.classList.remove("present");
+            keyTile.classList.add("correct");
+
             correct++;
             letterCount[letter]--;
         }
@@ -126,10 +180,16 @@ function update() {
             // 다른 곳에 있다면 ?
             if (word.includes(letter) && letterCount[letter] > 0) {
                 currTile.classList.add("present");
+                let keyTile = document.getElementById("Key" + letter);
+                if (!keyTile.classList.contains("correct")) {
+                    keyTile.classList.add("present");
+                }
                 letterCount[letter]--;
             } // 없다면 ?
             else {
                 currTile.classList.add("absent");
+                let keyTile = document.getElementById("Key" + letter);
+                keyTile.classList.add("absent")
             }
         }
     }

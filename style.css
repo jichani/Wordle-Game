@@ -67,7 +67,7 @@ hr {
 .key-tile {
     /* Box */
     border: 1px solid lightgray;
-    width: 40px;
+    width: 36px;
     height: 40px;
     margin: 1px;
 
@@ -83,21 +83,6 @@ hr {
     /* Box */
     border: 1px solid lightgray;
     width: 76px;
-    height: 40px;
-    margin: 1px;
-
-    /* Text */
-    font-size: 20px;
-    font-weight: bold;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.key-tile {
-    /* Box */
-    border: 1px solid lightgray;
-    width: 40px;
     height: 40px;
     margin: 1px;
 
