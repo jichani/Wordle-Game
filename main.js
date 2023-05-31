@@ -158,7 +158,7 @@ function update() {
         if (word[c] == letter) {
             currTile.classList.add("correct");
 
-            let keyTile = document.getElementById("key" + letter);
+            let keyTile = document.getElementById("Key" + letter);
             keyTile.classList.remove("present");
             keyTile.classList.add("correct");
 
